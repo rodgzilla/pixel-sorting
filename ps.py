@@ -3,6 +3,9 @@ import sys
 import os
 
 def get_image_data(image):
+    """This function load the image into a 2 dimensional array of pixels.
+
+    """
     data = [[0] * image.size[1] for _ in range(image.size[0])]
 
     for x in range(image.size[0]):
@@ -12,6 +15,9 @@ def get_image_data(image):
     return image.size[0], image.size[1], data
 
 def save_data(width, height, data, filename):
+    """This function save a 2 dimensional array of pixels into a file.
+
+    """
     img = Image.new('RGB', (width, height))
     img.putdata([data[x][y] for y in range(height) for x in
                  range(width)])
@@ -22,6 +28,10 @@ def avg_color(color):
     return (color[0] + color[1] + color[2]) / 3.
 
 def pixel_sort_vert(width, height, data, value):
+    """Pixel sort vertically from top to bottom. The column is sorted
+    from the first pixel above the threshold.
+
+    """
     pixel_sort_data = [[0] * height for _ in range(width)]
 
     for x in range(width):
@@ -37,6 +47,10 @@ def pixel_sort_vert(width, height, data, value):
     return pixel_sort_data
 
 def pixel_sort_vert_contiguous(width, height, data, value):
+    """Pixel sort vertically from top to bottom. Only contiguous regions
+    which pixels are above the threshold are sorted.
+
+    """
     pixel_sort_data = [[0] * height for _ in range(width)]
 
     for x in range(width):
