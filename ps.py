@@ -1,5 +1,6 @@
 from PIL import Image
 import sys
+import os
 
 def get_image_data(image):
     data = [[0] * image.size[1] for _ in range(image.size[0])]
@@ -36,6 +37,9 @@ def pixel_sort_vert(width, height, data, value):
     return pixel_sort_data
 
 if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        print("USAGE: python ps.py input_file threshold")
+        sys.exit(0)
     input_name = sys.argv[1]
     threshold = int(sys.argv[2])
     img = Image.open(input_name)
