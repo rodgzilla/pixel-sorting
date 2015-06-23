@@ -1,6 +1,7 @@
 from PIL import Image
 import sys
 import os
+import random
 
 def get_image_data(image):
     """This function load the image into a 2 dimensional array of pixels.
@@ -71,6 +72,33 @@ def pixel_sort_vert_contiguous(width, height, data, value):
 
     return pixel_sort_data
 
+def pixel_shuffle_vert_contiguous(width, height, data, value):
+    """Pixel sort vertically from top to bottom. Only contiguous regions
+    which pixels are above the threshold are sorted.
+
+    """
+    pixel_sort_data = [[0] * height for _ in range(width)]
+
+    for x in range(width):
+        y = 0
+        while y < height:
+            if avg_color(data[x][y]) < value:
+                pixel_sort_data[x][y] = data[x][y]
+                y += 1
+            else:
+                y_max = y
+                while y_max < height and avg_color(data[x][y_max]) >= value:
+                    y_max += 1
+                pixels = [data[x][i] for i in range(y, y_max)]
+                pixels = random.sample(pixels, len(pixels))
+#                pixels.sort(key = lambda x: avg_color(x), reverse=True)
+                for i in range(len(pixels)):
+                    pixel_sort_data[x][y + i] = pixels[i]
+                y = y_max
+
+    return pixel_sort_data
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("USAGE: python ps.py input_file threshold")
@@ -84,7 +112,8 @@ if __name__ == '__main__':
     width, height, data = get_image_data(img)
     print('Data loaded.')
     print('Starting sorting.')
-    pixel_sort_data = pixel_sort_vert_contiguous(width, height, data, threshold)
+#    pixel_sort_data = pixel_sort_vert_contiguous(width, height, data, threshold)
+    pixel_sort_data = pixel_shuffle_vert_contiguous(width, height, data, threshold)
     print('Sorting done.')
     print('Saving data.')
     save_data(width, height, pixel_sort_data, output_name)
